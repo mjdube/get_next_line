@@ -16,7 +16,7 @@
 int			get_next_line(const int fd, char **line)
 {
 	char			buf[BUFFER_SIZE + 1];
-	static			*save;
+	static char		*save;
 	int				ret;
 	size_t			i;
 	char			*temp;
@@ -30,6 +30,8 @@ int			get_next_line(const int fd, char **line)
 		{
 			*line = (stuff up to not incl '\n');
 			return (1);
+			temp = ft_strchr(buf, '\n')
+			save = ft_strsub(buff, (ft_strlen(buff) - ft_strlen(temp), ft_strlen(temp));
 		temp = ft_strnew(ft_strlen(buf));
 
 	}
