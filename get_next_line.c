@@ -16,15 +16,19 @@
 int			get_next_line(const int fd, char **line)
 {
 	char			buf[BUFFER_SIZE + 1];
+	static			*save;
 	int				ret;
 	size_t			i;
 	char			*temp;
 	
-	if (fd < 0 || !(*line) || ret = read(fd, buf, BUFFER_SIZE) < 0)
+	if (fd < 0 || !(*line) || ret = read(fd, NULL, 0) < 0)
 		return (-1);
+	
 	while (ret = read(fd, buf, BUFFER_SIZE) > 0)
 	{
-		if ('\n' == ft_strchr(buf, '\n'))
+		if (ft_strchr(buf, '\n'))
+		{
+			*line = (stuff up to not incl '\n');
 			return (1);
 		temp = ft_strnew(ft_strlen(buf));
 
