@@ -16,11 +16,7 @@
 static int 		checking(char **line, char **save, char *temp)
 {
 	int endl;
-	
-	if ((endl = (ft_strchr(c[fd], '\n') > 0)))
-		*line = ft_strsub(save[fd], 0, ft_strchr(save[fd], '\n') - save[fd]);
-	else
-		*line = ft_strdup(save[fd]);
+
 	save[fd] = ft_strsub(save[fd], (ft_strlen(*line) + endl), (ft_strlen(save[fd]) - (ft_strlen(*line) + endl)));
 	ft_strdel(&tmp);
 	if (!(!save[fd] && !ft_strlen(*line)))
