@@ -13,17 +13,18 @@
 #include "get_next_line.h"
 #include <string.h>
 
-static int 		checking(char *buffer)
+static int 		checking(char **line, char **save, char *temp)
 {
-	int i;
-
-	while (buffer[i])
-	{
-		if (buffer == '\n')
-			return (1);
-		i++;
-	}
-	return (0);
+	int endl;
+	
+	if ((endl = (ft_strchr(c[fd], '\n') > 0)))
+		*line = ft_strsub(c[fd], 0, ft_strchr(c[fd], '\n') - c[fd]);
+	else
+		*line = ft_strdup(c[fd]);
+	c[fd] = ft_strsub(c[fd], (unsigned int)(ft_strlen(*line) + endl),
+			(size_t)(ft_strlen(c[fd]) - (ft_strlen(*line) + endl)));
+	ft_strdel(&tmp);
+	return (!(!c[fd] && !ft_strlen(*line)));
 }
 
 int			get_next_line(const int fd, char **line)
@@ -33,9 +34,9 @@ int			get_next_line(const int fd, char **line)
 	int				ret;
 	char			*temp;
 	
-	if (fd < 0 || !(*line))
+	if (fd < 0 || !(*line) || !(save[fd] = ft_strnew(1)))
 		return (-1);
-	while (ret = read(fd, buf, BUFFER_SIZE) > 0)
+	while ((ret = read(fd, buf, BUFFER_SIZE) > 0) && !ft_strchr(buf, '\n'))
 	{
 		buf[ret] = '\0';
 
@@ -48,16 +49,11 @@ int			get_next_line(const int fd, char **line)
 			temp = ft_strnew(ft_strlen(buf));
 		}
 		*/
-		if (!ft_strchr(buf, '\n') && save[fd] == NULL)
-		{
-			save[fd] = ft_strnew(buf);
-			temp = ft_strjoin(save[fd], buff);
-			ft_strdel(&save[fd]);
-			save[fd] = temp;
-			ft_strdel(temp);
-		}
+		temp = save[fd];
+		save[fd] = ft_strjoin(save[fd], buf);
+		ft_strdel(&temp);
 	}
-	if (ret == -1 || !(*tem == save[fd]))
+	if (ret == -1 || !(*temp == save[fd]))
 	{
 		if (ret == -1)
 			return (-1);
@@ -67,5 +63,5 @@ int			get_next_line(const int fd, char **line)
 		*line = lseek(fd, ret, SEEK_CUR);
 	else
 		*line = ft_strdup(save[fd]);
-	save[fd] = 
+	return (checking(line, save, temp))
 }
