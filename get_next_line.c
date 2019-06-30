@@ -63,3 +63,12 @@ int			get_next_line(const int fd, char **line)
 		*line = ft_strdup(save[fd]);
 	return (checking(line, save, temp))
 }
+/*
+if ((endl = (ft_strchr(c[fd], '\n') > 0)))
+		*line = ft_strsub(c[fd], 0, ft_strchr(c[fd], '\n') - c[fd]);
+	else
+		*line = ft_strdup(c[fd]);
+	c[fd] = ft_strsub(c[fd], (unsigned int)(ft_strlen(*line) + endl),
+			(size_t)(ft_strlen(c[fd]) - (ft_strlen(*line) + endl)));
+	ft_strdel(&tmp);
+	return (!(!c[fd] && !ft_strlen(*line)));*/
