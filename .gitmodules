@@ -1,0 +1,3 @@
+[submodule "libft"]
+	path = libft
+	url = vogsphere@vogsphere.wethinkcode.co.za:intra/2019/activities/libft/mdube2
