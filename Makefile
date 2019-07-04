@@ -12,7 +12,7 @@
 
 NAME = libft.a
 
-SRC = get_next_line.c
+SRC = get_next_line.c main.c
 
 OBJ = get_next_line.o main.o
 
