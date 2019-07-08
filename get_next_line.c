@@ -5,104 +5,61 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdube <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/25 10:02:55 by mdube             #+#    #+#             */
-/*   Updated: 2019/07/05 16:49:52 by mdube            ###   ########.fr       */
+/*   Created: 2019/07/06 08:28:27 by mdube             #+#    #+#             */
+/*   Updated: 2019/07/06 10:21:01 by mdube            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <string.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <unistd.h>
-#include "libft/libft.h"
 
-static int			checknewline(char *s)
+int					ft_otherline(char **s, char **line, int fd)
 {
-	int				i;
+	char			*tmp;
+	int				len;
 
-	i = 0;
-	while (s[i])
+	len = 0;
+	while (s[fd][len] != '\n' && s[fd][len] != '\0')
+		len++;
+	if (s[fd][len] == '\n')
 	{
-		if (s[i] == '\n')
-			return (1);
-		i++;
+		*line = ft_strsub(s[fd], 0, len);
+		tmp = ft_strdup(s[fd] + len + 1);
+		free(s[fd]);
+		s[fd] = tmp;
+		if (s[fd][0] == '\0')
+			ft_strdel(&s[fd]);
 	}
-	return (0);
-}
-
-static char			*beforenewline(const char *s)
-{
-	size_t			i;
-	char			*fresh;
-
-	i = 0;
-	while (s[i])
+	else if (s[fd][len] == '\0')
 	{
-		if (s[i] == '\n')
-			break ;
-		i++;
-	}
-	fresh = (char *)ft_memalloc(sizeof(char) * i);
-	fresh = ft_strncpy(fresh, s, i);
-	return (fresh);
-}
-
-static char			*afternewline(char *s)
-{
-	char			*fresh;
-
-	fresh = ft_strchr(s, '\n');
-	return (++fresh);
-}
-
-static int			newline(char **s, char **line, int fd)
-{
-	int				i;
-	char			*temp;
-
-	i = 0;
-	if (s[fd][0] == '\0')
-		return (1);
-	temp = afternewline(s[fd]);
-	free(&s[fd]);
-	s[fd] = temp;
-	if (checknewline(s[fd]) == 1 )
-	{
-		*line = beforenewline(s[fd]);
-		ft_putstr(*line);
-		if (checknewline(s[fd]) == 1)
-			return (newline(s, line, fd));
-	}
-	else
 		*line = ft_strdup(s[fd]);
-	free(&s[fd]);
+		ft_strdel(&s[fd]);
+	}
 	return (1);
 }
 
 int					get_next_line(const int fd, char **line)
 {
-	static char		*s[MAX_FD];
+	static char		*s[1024];
+	char			buf[BUFF_SIZE + 1];
+	char			*tmp;
 	int				ret;
-	char			buf[BUFFER_SIZE + 1];
-	char			*temp;
 
-	if (fd < 0 || !*(line))
+	if (fd < 0 || line == NULL)
 		return (-1);
-	s[fd] = ft_strnew(1);
-	while (((ret = read(fd, buf, BUFFER_SIZE)) > 0) && (checknewline(s[fd]) == 0))
+	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[ret] = '\0';
-		temp = ft_strjoin(s[fd], buf);
-		free(&s[fd]);
-		s[fd] = temp;
+		if (s[fd] == NULL)
+			s[fd] = ft_strnew(1);
+		tmp = ft_strjoin(s[fd], buf);
+		free(s[fd]);
+		s[fd] = tmp;
+		if (ft_strchr(buf, '\n'))
+			break ;
 	}
 	if (ret < 0)
 		return (-1);
-	if (ret == 0 && (s[fd] == NULL || s[fd][0] == '\0'))
+	else if (ret == 0 && (s[fd] == NULL || s[fd][0] == '\0'))
 		return (0);
-	if (checknewline(s[fd]) == 1)
-		*line = beforenewline(s[fd]);
-	ft_putstr(*line);
-	return (newline(s, line, fd));
+	return (ft_otherline(s, line, fd));
 }
