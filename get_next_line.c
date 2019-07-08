@@ -6,7 +6,7 @@
 /*   By: mdube <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 10:02:55 by mdube             #+#    #+#             */
-/*   Updated: 2019/07/03 16:17:09 by mdube            ###   ########.fr       */
+/*   Updated: 2019/07/05 16:49:52 by mdube            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static char			*beforenewline(const char *s)
 	while (s[i])
 	{
 		if (s[i] == '\n')
-			break;
+			break ;
 		i++;
 	}
 	fresh = (char *)ft_memalloc(sizeof(char) * i);
@@ -51,7 +51,7 @@ static char			*beforenewline(const char *s)
 static char			*afternewline(char *s)
 {
 	char			*fresh;
-	
+
 	fresh = ft_strchr(s, '\n');
 	return (++fresh);
 }
@@ -59,18 +59,24 @@ static char			*afternewline(char *s)
 static int			newline(char **s, char **line, int fd)
 {
 	int				i;
-	
+	char			*temp;
+
 	i = 0;
-	while (s[fd][i] != '\n' || s[fd][i] != '\0')
-		i++;
-	if (s[fd][i] == '\n')
-	{
-		ft_strdel(&s[fd]);
+	if (s[fd][0] == '\0')
 		return (1);
+	temp = afternewline(s[fd]);
+	free(&s[fd]);
+	s[fd] = temp;
+	if (checknewline(s[fd]) == 1 )
+	{
+		*line = beforenewline(s[fd]);
+		ft_putstr(*line);
+		if (checknewline(s[fd]) == 1)
+			return (newline(s, line, fd));
 	}
-	else if (s[fd][i] ==  '\0')
-		*line = afternewline(s[fd]);
-	ft_strdel(&s[fd]);
+	else
+		*line = ft_strdup(s[fd]);
+	free(&s[fd]);
 	return (1);
 }
 
@@ -80,23 +86,23 @@ int					get_next_line(const int fd, char **line)
 	int				ret;
 	char			buf[BUFFER_SIZE + 1];
 	char			*temp;
-	
-	if (fd < 0 || !*(line) || (ret = read(fd, buf, BUFFER_SIZE)) < 0)
+
+	if (fd < 0 || !*(line))
 		return (-1);
-	while (ret  > 0 && (checknewline(s[fd]) == 0))
+	s[fd] = ft_strnew(1);
+	while (((ret = read(fd, buf, BUFFER_SIZE)) > 0) && (checknewline(s[fd]) == 0))
 	{
 		buf[ret] = '\0';
-		if (s[fd] == NULL)
-			s[fd] = ft_strnew(1);
 		temp = ft_strjoin(s[fd], buf);
-		ft_strdel(&s[fd]);
+		free(&s[fd]);
 		s[fd] = temp;
 	}
 	if (ret < 0)
 		return (-1);
-	else if (ret == 0 && (s[fd] == NULL || s[fd][0] == '\0'))
+	if (ret == 0 && (s[fd] == NULL || s[fd][0] == '\0'))
 		return (0);
 	if (checknewline(s[fd]) == 1)
 		*line = beforenewline(s[fd]);
+	ft_putstr(*line);
 	return (newline(s, line, fd));
 }

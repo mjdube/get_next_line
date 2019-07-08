@@ -6,7 +6,7 @@
 #    By: mdube <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/03 17:47:48 by mdube             #+#    #+#              #
-#    Updated: 2019/07/03 18:04:17 by mdube            ###   ########.fr        #
+#    Updated: 2019/07/04 13:01:56 by mdube            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,9 @@ OBJ = get_next_line.o main.o
 all: $(NAME)
 
 $(NAME):
-	@clang -Wall -Werror -Wextra -I libft/includes -o get_next_line.o -c get_next_line.c
-	@clang -Wall -Werror -Wextra -I libft/includes -0 main.o -c main.c
-	@clang -o test_gnl main.o get_next_line.o libft/includes -L libft/ -lft
+	@clang -Wall -Werror -Wextra -I libft/libft.h -o get_next_line.o -c get_next_line.c
+	@clang -Wall -Werror -Wextra -I libft/libft.h -o main.o -c main.c
+	@clang -o test_gnl main.o get_next_line.o libft/libft.h -L libft/ -lft
 
 clean:
 	rm -f $(OBJ)
